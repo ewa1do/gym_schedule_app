@@ -1,20 +1,19 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Client } from '@/types'
-import { useClientStore } from '@/store/clients'
 
 import { IoSearchOutline, IoAddSharp } from 'react-icons/io5/'
 
+import { insertDataToSupabase } from '@/services/insertDataToSupaBase'
 import { fonts, getHour } from '@/utilities'
 
 const { poppins } = fonts()
 
 interface SearchbarProps {
     data: Array<Client>
+    addAssistent: (client: Client) => void
 }
 
-export function Searchbar({ data }: SearchbarProps): JSX.Element {
-    const { addClient } = useClientStore()
-
+export function Searchbar({ data, addAssistent }: SearchbarProps): JSX.Element {
     const [clients, setClients] = useState<Client[]>([])
 
     const inputRef = useRef<HTMLInputElement>(null)
@@ -62,11 +61,16 @@ export function Searchbar({ data }: SearchbarProps): JSX.Element {
                     {clients?.map((client) => {
                         return (
                             <p
-                                onClick={() =>
-                                    addClient({
-                                        ...client,
-                                        entrance: getHour(),
-                                    })
+                                onClick={
+                                    () =>
+                                        addAssistent({
+                                            ...client,
+                                            entrance: getHour(),
+                                        })
+                                    // addClient({
+                                    //     ...client,
+                                    //     entrance: getHour(),
+                                    // })
                                 }
                                 key={`client-${client.cedula}`}
                             >

@@ -4,7 +4,7 @@ import { IoTrashOutline } from 'react-icons/io5'
 
 interface Props {
     clients: Client[]
-    onClick: (client: Client) => void
+    onClick: (client: number) => void
 }
 
 function TableClientsDesktop({ clients, onClick }: Props) {
@@ -38,12 +38,12 @@ function TableClientsDesktop({ clients, onClick }: Props) {
                         <td className="w-1/6">{client.name}</td>
                         <td className="w-1/6">{client.lastname}</td>
                         <td className="w-1/6">{client.cedula}</td>
-                        <td className="w-1/6">{client.phone_number}</td>
+                        <td className="w-1/6">{client.phone}</td>
                         <td className="w-1/6">{client?.entrance}</td>
                         <td className="w-1/6">
                             <button
                                 className="text-mint hover:text-teal"
-                                onClick={() => onClick(client)}
+                                onClick={() => onClick(client.id)}
                             >
                                 {' '}
                                 <IoTrashOutline />{' '}

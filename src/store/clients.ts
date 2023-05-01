@@ -4,7 +4,7 @@ import { supabaseClient } from '@/lib'
 
 interface ClientState {
     clients: Client[]
-    loadClientsFromDB: (clients: Client[]) => void
+    loadClientsFromDB: (clients: Client[] | undefined) => void
     addClient: (client: Client) => void
     removeClient: (id: string) => void
 }
@@ -12,7 +12,7 @@ interface ClientState {
 export const useClientStore = create<ClientState>((set) => ({
     clients: [],
 
-    loadClientsFromDB: (mappedClients: Client[]) =>
+    loadClientsFromDB: (mappedClients: Client[] | undefined) =>
         set(() => ({ clients: mappedClients })),
 
     addClient: (client: Client) =>

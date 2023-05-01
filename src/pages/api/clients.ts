@@ -24,9 +24,10 @@ export default async function handler(
     }
 
     const mappedClients = clients.map((client) => ({
+        id: client.id,
         name: client.name,
         lastname: client.lastname,
-        phone_number: client.phone_number,
+        phone: client.phone,
         date: client.inserted_at,
         hour: client.inserted_at,
         cedula: client.cedula,
