@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { Client } from '@/types'
-import { clientStore } from '@/store/clients'
+import { useClientStore } from '@/store/clients'
 
 import { IoSearchOutline, IoAddSharp } from 'react-icons/io5/'
 
@@ -13,7 +13,7 @@ interface SearchbarProps {
 }
 
 export function Searchbar({ data }: SearchbarProps): JSX.Element {
-    const { addClient } = clientStore()
+    const { addClient } = useClientStore()
 
     const [clients, setClients] = useState<Client[]>([])
 

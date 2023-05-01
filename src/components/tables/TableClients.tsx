@@ -1,5 +1,5 @@
 import { Client } from '@/types'
-import { clientStore } from '@/store'
+import { useClientStore } from '@/store'
 
 import TableClientsMobile from './TableClientsMobile'
 import TableClientsDesktop from './TableClientsDesktop'
@@ -9,7 +9,7 @@ import { useScreenSize } from '@/hooks'
 export function TableClients() {
     const [{ width }, { tablet }] = useScreenSize()
 
-    const { clients, removeClient } = clientStore()
+    const { clients, removeClient } = useClientStore()
 
     function removeClientHandler(client: Client) {
         removeClient(client.cedula)
