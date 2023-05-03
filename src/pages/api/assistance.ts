@@ -5,7 +5,19 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const data = await supabaseClient.from('assistance').select('*')
+    const { date } = req.query
 
-    res.status(200).json(data)
+    const data = await supabaseClient
+        .from('assistance')
+        .select(
+            `*, clients (
+                        name, 
+                        lastname,
+                        phone, 
+                        cedula)
+        `
+        )
+        .eq('date', date)
+
+    res.status(200).json({ ...data })
 }

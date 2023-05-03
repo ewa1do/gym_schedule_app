@@ -1,5 +1,7 @@
-export async function getAssistants() {
-    const res = await fetch('/api/assistance')
+export async function getAssistants(
+    date: string = new Date().toLocaleDateString()
+) {
+    const res = await fetch(`/api/assistance?date=${date}`)
 
     const data = await res.json()
 
