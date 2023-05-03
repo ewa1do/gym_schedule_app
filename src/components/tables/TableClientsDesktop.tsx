@@ -1,13 +1,40 @@
-import { Client } from '@/types'
+import { supabaseClient } from '@/lib'
+import { useEffect, useState } from 'react'
+import { Assistant, Client } from '@/types'
 import { clsx } from 'clsx'
 import { IoTrashOutline } from 'react-icons/io5'
+import { useAssistStore } from '@/store'
+import { deleteAssistant } from '@/services'
 
 interface Props {
-    clients: Client[]
-    onClick: (client: number) => void
+    assistants: Client[]
+    // onClick: (client: number) => void
+    onClick: (id: number) => void
 }
 
-function TableClientsDesktop({ clients, onClick }: Props) {
+function TableClientsDesktop() {
+    const {
+        assistants,
+        removeAssistant,
+        totalAssists,
+        decrementAssistantsNumber,
+    } = useAssistStore()
+
+    const [clientSelected, setClientSelected] = useState<Assistant>(
+        {} as Assistant
+    )
+
+    useEffect(() => {
+        if (assistants.length < totalAssists) {
+            ;(async function () {
+                await deleteAssistant(clientSelected)
+
+                setClientSelected({} as Assistant)
+                decrementAssistantsNumber()
+            })()
+        }
+    }, [assistants])
+
     return (
         <table className="mt-20 text-slate-300 w-[90%] ml-[5%]">
             <thead className="border-b border-teal">
@@ -22,7 +49,7 @@ function TableClientsDesktop({ clients, onClick }: Props) {
                 </tr>
             </thead>
             <tbody>
-                {clients?.map((client, i) => (
+                {assistants?.map((client, i) => (
                     <tr
                         key={`client-${client.cedula}`}
                         className={clsx(
@@ -34,7 +61,7 @@ function TableClientsDesktop({ clients, onClick }: Props) {
                             }
                         )}
                     >
-                        <td className="w-1/6">Apr 30, 2023</td>
+                        <td className="w-1/6">{client.date}</td>
                         <td className="w-1/6">{client.name}</td>
                         <td className="w-1/6">{client.lastname}</td>
                         <td className="w-1/6">{client.cedula}</td>
@@ -43,7 +70,10 @@ function TableClientsDesktop({ clients, onClick }: Props) {
                         <td className="w-1/6">
                             <button
                                 className="text-mint hover:text-teal"
-                                onClick={() => onClick(client.id)}
+                                onClick={() => {
+                                    setClientSelected(client)
+                                    removeAssistant(client.id)
+                                }}
                             >
                                 {' '}
                                 <IoTrashOutline />{' '}

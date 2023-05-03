@@ -2,21 +2,28 @@ import { Client } from '@/types'
 import { create } from 'zustand'
 
 type AssistanceState = {
-    initialLoad: Array<any>
     assistants: Array<any>
+    initialLoad: Array<any>
+    totalAssists: number
     loadAssistants: (loadedAssistants: any) => void
     addAssistant: (client: Client) => void
+    removeAssistant: (id: number) => void
+    incrementAssistantsNumber: () => void
+    decrementAssistantsNumber: () => void
 }
 
 export const useAssistStore = create<AssistanceState>((set) => {
     return {
         initialLoad: [],
         assistants: [],
+        totalAssists: 0,
 
         loadAssistants: (loadedAssistants: any) =>
-            set(() => {
+            set((state) => {
                 return {
                     initialLoad: loadedAssistants,
+                    assistants: state.initialLoad,
+                    totalAssists: state.initialLoad.length,
                 }
             }),
 
@@ -27,14 +34,21 @@ export const useAssistStore = create<AssistanceState>((set) => {
                 }
             }),
 
-        removeAssistant: (id: number) => set(() => ({})),
+        removeAssistant: (id: number) =>
+            set((state) => ({
+                assistants: state.assistants.filter(
+                    (assistant) => assistant.id !== id
+                ),
+            })),
 
-        // function addAssistantHandler(client: Client) {
-        //     setAssitance((prev) => prev.concat(client))
-        // },
+        incrementAssistantsNumber: () =>
+            set(({ totalAssists }) => ({
+                totalAssists: totalAssists + 1,
+            })),
 
-        // function removeAssistantHandler(id: number) {
-        //     setAssitance((prev) => prev.filter((client) => client.id !== id))
-        // },
+        decrementAssistantsNumber: () =>
+            set(({ totalAssists }) => ({
+                totalAssists: Math.max(totalAssists - 1, 0),
+            })),
     }
 })

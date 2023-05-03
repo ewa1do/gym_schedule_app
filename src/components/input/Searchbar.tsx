@@ -4,14 +4,12 @@ import { IoSearchOutline, IoAddSharp } from 'react-icons/io5/'
 import { Client } from '@/types'
 import { fonts, getHour } from '@/utilities'
 import { fetchClients } from '@/services'
-import { useClientStore } from '@/store'
+import { useAssistStore, useClientStore } from '@/store'
 
 const { poppins } = fonts()
-interface SearchbarProps {
-    addAssistent: (client: Client) => void
-}
 
-export function Searchbar({ addAssistent }: SearchbarProps): JSX.Element {
+export function Searchbar(): JSX.Element {
+    const { addAssistant } = useAssistStore()
     const { loadClientsFromDB, clients } = useClientStore()
     const [clientsSelected, setClientsSelected] = useState<Client[]>([])
 
@@ -69,7 +67,7 @@ export function Searchbar({ addAssistent }: SearchbarProps): JSX.Element {
                         return (
                             <p
                                 onClick={() =>
-                                    addAssistent({
+                                    addAssistant({
                                         ...client,
                                         entrance: getHour(),
                                     })

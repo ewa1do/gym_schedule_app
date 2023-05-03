@@ -16,7 +16,7 @@ interface Props {
 export function TableClients(props: Props) {
     const [{ width }, { tablet }] = useScreenSize()
     const { clients, removeClient } = useClientStore()
-    const { initialLoad, loadAssistants } = useAssistStore()
+    const { loadAssistants, assistants } = useAssistStore()
 
     function removeClientHandler(client: Client) {
         removeClient(client.cedula)
@@ -43,8 +43,8 @@ export function TableClients(props: Props) {
 
     return width >= tablet ? (
         <TableClientsDesktop
-            clients={initialLoad.concat(props.assistance)}
-            onClick={props.handler}
+        // assistants={initialLoad.concat(props.assistance)}
+        // onClick={props.handler}
         />
     ) : (
         <TableClientsMobile clients={clients} onClick={removeClientHandler} />
