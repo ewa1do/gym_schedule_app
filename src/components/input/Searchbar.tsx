@@ -1,20 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
-import { Client } from '@/types'
-
 import { IoSearchOutline, IoAddSharp } from 'react-icons/io5/'
 
-import { insertDataToSupabase } from '@/services/insertDataToSupaBase'
+import { Client } from '@/types'
 import { fonts, getHour } from '@/utilities'
+import { fetchClients } from '@/services'
+import { useClientStore } from '@/store'
 
 const { poppins } = fonts()
-
 interface SearchbarProps {
-    data: Array<Client>
     addAssistent: (client: Client) => void
 }
 
-export function Searchbar({ data, addAssistent }: SearchbarProps): JSX.Element {
-    const [clients, setClients] = useState<Client[]>([])
+export function Searchbar({ addAssistent }: SearchbarProps): JSX.Element {
+    const { loadClientsFromDB, clients } = useClientStore()
+    const [clientsSelected, setClientsSelected] = useState<Client[]>([])
 
     const inputRef = useRef<HTMLInputElement>(null)
 
@@ -22,15 +21,23 @@ export function Searchbar({ data, addAssistent }: SearchbarProps): JSX.Element {
         const value = inputRef.current?.value
 
         if (value === undefined || value?.length < 2) {
-            return setClients([])
+            return setClientsSelected([])
         }
 
         const coincidences = arr.filter((client) => {
             return client.name.includes(value)
         })
 
-        return setClients(coincidences)
+        return setClientsSelected(coincidences)
     }
+
+    useEffect(() => {
+        ;(async function () {
+            const data = await fetchClients()
+
+            loadClientsFromDB(data)
+        })()
+    }, [loadClientsFromDB])
 
     return (
         <form className={`${poppins.className}`}>
@@ -42,7 +49,7 @@ export function Searchbar({ data, addAssistent }: SearchbarProps): JSX.Element {
                         id=""
                         placeholder="Buscar clientes"
                         ref={inputRef}
-                        onChange={() => getCoincidences(data)}
+                        onChange={() => getCoincidences(clients)}
                         className="p1 bg-transparent py-1 outline-none text-slate-300 min-w-[20rem]"
                     />
 
@@ -56,21 +63,16 @@ export function Searchbar({ data, addAssistent }: SearchbarProps): JSX.Element {
                 </button>
             </div>
 
-            {clients.length > 0 && (
+            {clientsSelected.length > 0 && (
                 <div className="flex flex-col ml-14 border max-w-[22rem] text-slate-300">
-                    {clients?.map((client) => {
+                    {clientsSelected?.map((client) => {
                         return (
                             <p
-                                onClick={
-                                    () =>
-                                        addAssistent({
-                                            ...client,
-                                            entrance: getHour(),
-                                        })
-                                    // addClient({
-                                    //     ...client,
-                                    //     entrance: getHour(),
-                                    // })
+                                onClick={() =>
+                                    addAssistent({
+                                        ...client,
+                                        entrance: getHour(),
+                                    })
                                 }
                                 key={`client-${client.cedula}`}
                             >

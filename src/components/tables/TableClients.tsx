@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Client } from '@/types'
-import { useClientStore } from '@/store'
+import { Assistant, Client } from '@/types'
+import { useAssistStore, useClientStore } from '@/store'
 
 import TableClientsMobile from './TableClientsMobile'
 import TableClientsDesktop from './TableClientsDesktop'
@@ -15,8 +15,8 @@ interface Props {
 
 export function TableClients(props: Props) {
     const [{ width }, { tablet }] = useScreenSize()
-
     const { clients, removeClient } = useClientStore()
+    const { initialLoad, loadAssistants } = useAssistStore()
 
     function removeClientHandler(client: Client) {
         removeClient(client.cedula)
@@ -26,13 +26,24 @@ export function TableClients(props: Props) {
         ;(async function () {
             const { data: assists } = await getAssistants()
 
-            console.log('assists', assists)
+            const mappedAssists = assists.map((assistant: Assistant) => ({
+                name: assistant.clients.name,
+                lastname: assistant.clients.lastname,
+                cedula: assistant.clients.cedula,
+                phone: assistant.clients.phone,
+                date: assistant.date,
+                entrance: assistant.entrance,
+                client_id: assistant.client_id,
+                id: assistant.id,
+            }))
+
+            loadAssistants(mappedAssists)
         })()
-    }, [])
+    }, [loadAssistants])
 
     return width >= tablet ? (
         <TableClientsDesktop
-            clients={props.assistance}
+            clients={initialLoad.concat(props.assistance)}
             onClick={props.handler}
         />
     ) : (

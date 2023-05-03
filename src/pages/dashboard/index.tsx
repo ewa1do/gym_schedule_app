@@ -3,14 +3,11 @@ import { useEffect, useState } from 'react'
 import { Client } from '@/types'
 import { Searchbar, TableClients } from '@/components'
 import { fonts } from '@/utilities'
-import { useClientStore } from '@/store'
-import { fetchClients } from '@/services'
 import { insertDataToSupabase } from '@/services/insertDataToSupaBase'
 
 const { poppins } = fonts()
 
 function AssistancePage(): JSX.Element {
-    const { loadClientsFromDB, clients } = useClientStore()
     const [assistance, setAssitance] = useState<Client[]>([])
 
     function addAssistantHandler(client: Client) {
@@ -20,14 +17,6 @@ function AssistancePage(): JSX.Element {
     function removeAssistantHandler(id: number) {
         setAssitance((prev) => prev.filter((client) => client.id !== id))
     }
-
-    useEffect(() => {
-        ;(async function () {
-            const data = await fetchClients()
-
-            loadClientsFromDB(data)
-        })()
-    }, [loadClientsFromDB])
 
     useEffect(() => {
         ;(async function () {
@@ -51,7 +40,8 @@ function AssistancePage(): JSX.Element {
             {/* hamburger */}
 
             <h1>GYM</h1>
-            <Searchbar data={clients} addAssistent={addAssistantHandler} />
+            {/* <Searchbar data={clients} addAssistent={addAssistantHandler} /> */}
+            <Searchbar addAssistent={addAssistantHandler} />
             <TableClients
                 assistance={assistance}
                 handler={removeAssistantHandler}
