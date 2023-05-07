@@ -4,7 +4,7 @@ import { clsx } from 'clsx'
 
 import { deleteAssistant } from '@/services'
 import { useAssistStore } from '@/store'
-import { Assistant, Client } from '@/types'
+import { Assistant } from '@/types'
 
 function TableClientsMobile(): JSX.Element {
     const {
@@ -51,7 +51,7 @@ function TableClientsMobile(): JSX.Element {
                     >
                         <td className="w-1/4">{client.name}</td>
                         <td className="w-1/4">{client.lastname}</td>
-                        <td className="w-1/4">09:00AM</td>
+                        <td className="w-1/4">{client.entrance}</td>
                         <td className="w-1/4">
                             <button className="text-mint_light hover:text-teal">
                                 {' '}
