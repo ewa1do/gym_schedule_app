@@ -1,16 +1,10 @@
-import { supabaseClient } from '@/lib'
 import { useEffect, useState } from 'react'
-import { Assistant, Client } from '@/types'
 import { clsx } from 'clsx'
 import { IoTrashOutline } from 'react-icons/io5'
+
+import { Assistant } from '@/types'
 import { useAssistStore } from '@/store'
 import { deleteAssistant } from '@/services'
-
-interface Props {
-    assistants: Client[]
-    // onClick: (client: number) => void
-    onClick: (id: number) => void
-}
 
 function TableClientsDesktop() {
     const {

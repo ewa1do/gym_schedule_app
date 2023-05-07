@@ -41,12 +41,5 @@ export function TableClients(props: Props) {
         })()
     }, [loadAssistants])
 
-    return width >= tablet ? (
-        <TableClientsDesktop
-        // assistants={initialLoad.concat(props.assistance)}
-        // onClick={props.handler}
-        />
-    ) : (
-        <TableClientsMobile clients={clients} onClick={removeClientHandler} />
-    )
+    return width >= tablet ? <TableClientsDesktop /> : <TableClientsMobile />
 }

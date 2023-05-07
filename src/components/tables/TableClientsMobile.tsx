@@ -1,14 +1,33 @@
-import { Client } from '@/types'
-import { clsx } from 'clsx'
+import { useEffect, useState } from 'react'
 import { IoEllipsisHorizontalOutline, IoTrashOutline } from 'react-icons/io5'
+import { clsx } from 'clsx'
 
-interface Props {
-    clients: Client[]
-    onClick: (client: Client) => void
-}
+import { deleteAssistant } from '@/services'
+import { useAssistStore } from '@/store'
+import { Assistant, Client } from '@/types'
 
-function TableClientsMobile(props: Props): JSX.Element {
-    const { clients, onClick } = props
+function TableClientsMobile(): JSX.Element {
+    const {
+        assistants,
+        removeAssistant,
+        totalAssists,
+        decrementAssistantsNumber,
+    } = useAssistStore()
+
+    const [clientSelected, setClientSelected] = useState<Assistant>(
+        {} as Assistant
+    )
+
+    useEffect(() => {
+        if (assistants.length < totalAssists) {
+            ;(async function () {
+                await deleteAssistant(clientSelected)
+
+                setClientSelected({} as Assistant)
+                decrementAssistantsNumber()
+            })()
+        }
+    }, [assistants])
 
     return (
         <table className="mt-20 text-slate-300 w-[90%] ml-[5%]">
@@ -21,7 +40,7 @@ function TableClientsMobile(props: Props): JSX.Element {
                 </tr>
             </thead>
             <tbody>
-                {clients?.map((client, i) => (
+                {assistants?.map((client, i) => (
                     <tr
                         key={`client-${client.cedula}`}
                         className={clsx(`flex justify-between pt-2`, {
@@ -40,7 +59,10 @@ function TableClientsMobile(props: Props): JSX.Element {
                             </button>{' '}
                             <button
                                 className="text-mint hover:text-teal"
-                                onClick={() => onClick(client)}
+                                onClick={() => {
+                                    setClientSelected(client)
+                                    removeAssistant(client.id)
+                                }}
                             >
                                 {' '}
                                 <IoTrashOutline />{' '}
