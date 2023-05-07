@@ -29,6 +29,18 @@ export function Searchbar(): JSX.Element {
         return setClientsSelected(coincidences)
     }
 
+    function handleMouseEnter({ target }: React.MouseEvent<HTMLElement>) {
+        const el = target as HTMLElement
+
+        el.classList.add('text-teal')
+    }
+
+    function handleMouseLeave({ target }: React.MouseEvent<HTMLElement>) {
+        const el = target as HTMLElement
+
+        el.classList.remove('text-teal')
+    }
+
     useEffect(() => {
         ;(async function () {
             const data = await fetchClients()
@@ -39,7 +51,7 @@ export function Searchbar(): JSX.Element {
 
     return (
         <form className={`${poppins.className}`}>
-            <div className="flex justify-center">
+            <div className="flex justify-center min-w-[20rem] max-w-[25rem]">
                 <div className="flex items-center justify-around mx-10 border border-teal rounded-lg px-2">
                     <input
                         type="text"
@@ -48,7 +60,7 @@ export function Searchbar(): JSX.Element {
                         placeholder="Buscar clientes"
                         ref={inputRef}
                         onChange={() => getCoincidences(clients)}
-                        className="p1 bg-transparent py-1 outline-none text-slate-300 min-w-[20rem]"
+                        className="p1 bg-transparent py-1 outline-none text-slate-300 w-10/12"
                     />
 
                     <i className="text-teal">
@@ -62,17 +74,26 @@ export function Searchbar(): JSX.Element {
             </div>
 
             {clientsSelected.length > 0 && (
-                <div className="flex flex-col ml-14 border max-w-[22rem] text-slate-300">
-                    {clientsSelected?.map((client) => {
+                <div className="flex flex-col ml-14 border-b border-l border-r border-teal rounded-md text-slate-300 max-w-[14.6rem] cursor-pointer">
+                    {clientsSelected?.map((client, i) => {
                         return (
                             <p
-                                onClick={() =>
+                                onClick={() => {
                                     addAssistant({
                                         ...client,
                                         entrance: getHour(),
                                     })
-                                }
+
+                                    if (inputRef.current !== null) {
+                                        inputRef.current.value = ''
+                                    }
+
+                                    setClientsSelected([])
+                                }}
                                 key={`client-${client.cedula}`}
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
+                                className="p-1"
                             >
                                 {client.name} {client.lastname}
                             </p>
